@@ -11,7 +11,6 @@ namespace SocialNetwork.Core.Domain.Entities
 
         // Navigation Property
         public Post? Post { get; set; }  
-        public User? User { get; set; }
 
     }
 }

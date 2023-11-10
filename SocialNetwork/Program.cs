@@ -1,4 +1,7 @@
 using SocialNetwork.Infrastructure.Persistence;
+using SocialNetwork.Infrastructure.Identity;
+using SocialNetwork.Infrastructure.Shared;
+
 using SocialNetwork.Core.Application;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+builder.Services.AddIdentityInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddApplicationLayer();
 
 var app = builder.Build();

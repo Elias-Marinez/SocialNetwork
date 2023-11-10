@@ -7,7 +7,6 @@ using SocialNetwork.Core.Application.Dtos.Account.Response;
 using SocialNetwork.Core.Application.Interfaces;
 using SocialNetwork.Core.Application.Interfaces.Services;
 using SocialNetwork.Infrastructure.Identity.Entities;
-using System.Data;
 using System.Text;
 
 namespace SocialNetwork.Infrastructure.Identity.Services

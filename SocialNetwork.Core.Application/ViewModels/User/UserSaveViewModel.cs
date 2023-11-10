@@ -37,7 +37,7 @@ namespace SocialNetwork.Core.Application.ViewModels.User
         public required string ConfirmPassword { get; set; }
         public string? ImageUrl { get; set; }
         public required IFormFile Image { get; set; }
-        public bool Status { get; set; }
-
+        public bool HasError { get; set; }
+        public string? Error { get; set; }
     }
 }

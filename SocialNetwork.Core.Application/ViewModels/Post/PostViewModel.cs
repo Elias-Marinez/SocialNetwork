@@ -13,7 +13,6 @@ namespace SocialNetwork.Core.Application.ViewModels.Post
         public DateTime CreatedAt { get; set; }
 
         //Navigation Property
-        public UserViewModel? User { get; set; }
         public IEnumerable<CommentViewModel>? Comments { get; set; }
     }
 }

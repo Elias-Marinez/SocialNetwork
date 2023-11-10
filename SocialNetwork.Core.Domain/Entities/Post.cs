@@ -10,7 +10,6 @@ namespace SocialNetwork.Core.Domain.Entities
         public DateTime CreatedAt { get; set;}
 
         //Navigation Property
-        public User? User { get; set;}
         public ICollection<Comment>? Comments { get; set;}
     }
 }
