@@ -9,34 +9,37 @@ namespace SocialNetwork.Core.Application.ViewModels.User
 
         [Required(ErrorMessage = "Debe colocar un nombre")]
         [DataType(DataType.Text)]
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "Debe colocar un apellido")]
         [DataType(DataType.Text)]
-        public required string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Required(ErrorMessage = "Debe colocar un correo")]
         [DataType(DataType.EmailAddress)]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "Debe colocar un numero telefonico")]
         [DataType(DataType.PhoneNumber)]
-        public required string Phone { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Debe colocar un nombre de usuario")]
         [DataType(DataType.Text)]
-        public required string Username { get; set; }
+        public string? Username { get; set; }
 
         [Required(ErrorMessage = "Debe colocar una contraseña")]
         [DataType(DataType.Password)]
-        public required string Password { get; set; }
+        public string? Password { get; set; }
 
         [Compare(nameof(Password), ErrorMessage = "Las contraseñas no coiciden")]
         [Required(ErrorMessage = "Debe colocar una contraseña")]
         [DataType(DataType.Password)]
-        public required string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
         public string? ImageUrl { get; set; }
-        public required IFormFile Image { get; set; }
+
+        [Required(ErrorMessage = "Debe colocar una foto")]
+        [DataType(DataType.Upload)]
+        public IFormFile? Image { get; set; }
         public bool HasError { get; set; }
         public string? Error { get; set; }
     }

@@ -26,7 +26,7 @@ namespace SocialNetwork.Core.Application
             #endregion
 
             #region Helpers
-            services.AddTransient<IFileManager, FileManager>();
+            services.AddScoped(typeof(IFileManager<>), typeof(FileManager<>));
             #endregion
         }
     }

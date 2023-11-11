@@ -9,6 +9,6 @@ namespace SocialNetwork.Core.Application.Interfaces.Services
                                                     PostUpdateViewModel,
                                                     Post>
     {
-
+        Task Update(PostUpdateViewModel vm, int id);
     }
 }

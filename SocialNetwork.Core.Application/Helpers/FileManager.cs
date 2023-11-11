@@ -4,13 +4,11 @@ using SocialNetwork.Core.Application.Interfaces.Helpers;
 
 namespace SocialNetwork.Core.Application.Helpers
 {
-    public class FileManager : IFileManager
+    public class FileManager<Entity> : IFileManager<Entity> where Entity : class
     {
-        private string root = "wwwroot/images/";
-        public async Task<string> Save(IFormFile archive, string file)
+        private string root = $"wwwroot/images/{typeof(Entity).Name}/";
+        public async Task<string> Save(IFormFile archive)
         {
-            var saveroot = root + file;
-
             if (archive == null || archive.Length == 0)
             {
                 throw new ArgumentException("El archivo no es válido.");
@@ -18,7 +16,7 @@ namespace SocialNetwork.Core.Application.Helpers
 
             var name = Guid.NewGuid().ToString() + Path.GetExtension(archive.FileName);
 
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), saveroot);
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), root);
 
             if (!Directory.Exists(directoryPath))
             {
@@ -33,17 +31,16 @@ namespace SocialNetwork.Core.Application.Helpers
             }
             return name;
         }
-        public async Task<string> Update(IFormFile archivo, string file, string imageUrl)
+        public async Task<string> Update(IFormFile archivo, string imageUrl)
         {
-            Delete(file, imageUrl);
+            Delete(imageUrl);
 
-            return await Save(archivo, file);
+            return await Save(archivo);
         }
 
-        public void Delete(string file, string imageUrl)
+        public void Delete( string imageUrl)
         {
-            var deleteRoot = root + file;
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), deleteRoot);
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), root);
             var fileRoot = Path.Combine(directoryPath, imageUrl);
 
             if (File.Exists(fileRoot))

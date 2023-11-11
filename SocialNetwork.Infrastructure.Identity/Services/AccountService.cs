@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using SocialNetwork.Core.Application.Dtos.Account.Request;
@@ -16,45 +15,49 @@ namespace SocialNetwork.Infrastructure.Identity.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
-        private readonly IMapper _mapper;
 
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService, IMapper mapper)
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
-            _mapper = mapper;
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             AuthenticationResponse response = new();
 
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No Accounts registered with {request.Email}";
+                response.Error = $"No Accounts registered with {request.UserName}";
                 return response;
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"Invalid credentials for {request.Email}";
+                response.Error = $"Invalid credentials for {request.UserName}";
                 return response;
             }
+
             if (!user.EmailConfirmed)
             {
                 response.HasError = true;
-                response.Error = $"Account no confirmed for {request.Email}";
+                response.Error = $"Account no confirmed for {request.UserName}";
                 return response;
             }
 
             response.Id = user.Id;
+            response.Name = user.Name;
+            response.LastName = user.LastName;
             response.Email = user.Email;
             response.UserName = user.UserName;
+            response.PhoneNumber = user.PhoneNumber;
+            response.ImageUrl = user.ImageUrl;
             response.IsVerified = user.EmailConfirmed;
 
             return response;
@@ -116,7 +119,6 @@ namespace SocialNetwork.Infrastructure.Identity.Services
 
             return response;
         }
-
         public async Task<string> ConfirmAccountAsync(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -136,7 +138,6 @@ namespace SocialNetwork.Infrastructure.Identity.Services
                 return $"An error occurred wgile confirming {user.Email}.";
             }
         }
-
         public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
         {
             ForgotPasswordResponse response = new()
@@ -165,7 +166,6 @@ namespace SocialNetwork.Infrastructure.Identity.Services
 
             return response;
         }
-
         public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
         {
             ResetPasswordResponse response = new();

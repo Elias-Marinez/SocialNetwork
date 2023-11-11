@@ -8,12 +8,17 @@ namespace SocialNetwork.Infrastructure.Persistence.Context
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options): base(options) { }
 
+        public DbSet<Friends> Friends { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Tables & Primary Keys
+
+            modelBuilder.Entity<Friends>()
+                .ToTable("Friends")
+                .HasKey(p => p.FriendsId);
 
             modelBuilder.Entity<Post>()
                 .ToTable("Posts")

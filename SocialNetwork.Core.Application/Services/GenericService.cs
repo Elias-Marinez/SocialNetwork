@@ -26,11 +26,6 @@ namespace SocialNetwork.Core.Application.Services
             Entity entity = _mapper.Map<Entity>(vm);
             await _repository.AddAsync(entity);
         }
-        public virtual async Task Update(UpdateViewModel vm, int id)
-        {
-            Entity entity = _mapper.Map<Entity>(vm);
-            await _repository.UpdateAsync(entity, id);
-        }
 
         public virtual async Task Delete(int id)
         {

@@ -17,6 +17,12 @@ namespace SocialNetwork.Core.Application.Services
             _repository = repository;
             _mapper = mapper;
         }
+        public virtual async Task Update(PostUpdateViewModel vm, int id)
+        {
+            Post entity = _mapper.Map<Post>(vm);
+            await _repository.UpdateAsync(entity, id);
+        }
+
 
     }
 }
