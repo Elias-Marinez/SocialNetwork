@@ -23,6 +23,31 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             _emailService = emailService;
         }
 
+        public async Task<AuthenticationResponse> GetUserAsync(string id)
+        {
+            AuthenticationResponse response = new();
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                response.HasError = true;
+                response.Error = $"No user registered with {id}";
+                return response;
+            }
+
+            response.Id = user.Id;
+            response.Name = user.Name;
+            response.LastName = user.LastName;
+            response.Email = user.Email;
+            response.UserName = user.UserName;
+            response.PhoneNumber = user.PhoneNumber;
+            response.ImageUrl = user.ImageUrl;
+            response.IsVerified = user.EmailConfirmed;
+
+            return response;
+        }
+
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             AuthenticationResponse response = new();

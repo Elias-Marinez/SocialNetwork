@@ -5,7 +5,7 @@ namespace SocialNetwork.Core.Application.ViewModels.Post
 {
     public class PostSaveViewModel
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string? ImageUrl { get; set; }
         public required string Content { get; set; }
         public IFormFile? Image { get; set; }

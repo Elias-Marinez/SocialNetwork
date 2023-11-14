@@ -41,7 +41,7 @@ namespace SocialNetwork.Core.Application.Mappings
                 .ForMember(x => x.Image, opt => opt.Ignore())
                 .ReverseMap()
                 .ForMember(x => x.Comments, opt => opt.Ignore())
-                .ForMember(x => x.UserId, opt => opt.Ignore());
+                .ForMember(x => x.PostId, opt => opt.Ignore());
 
             CreateMap<Post, PostUpdateViewModel>()
                 .ForMember(x => x.Image, opt => opt.Ignore())
@@ -56,6 +56,7 @@ namespace SocialNetwork.Core.Application.Mappings
             CreateMap<Comment, CommentSaveViewModel>()
                 .ReverseMap()
                 .ForMember(x => x.CommentId, opt => opt.Ignore())
+                .ForMember(x => x.CreatedAt, opt => opt.Ignore())
                 .ForMember(x => x.Post, opt => opt.Ignore());
 
             CreateMap<Comment, CommentViewModel>()

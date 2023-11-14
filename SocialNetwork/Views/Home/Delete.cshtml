@@ -1,0 +1,53 @@
+﻿@model SocialNetwork.Core.Application.ViewModels.Post.PostUpdateViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="row">
+    <div class="container col-4">
+        <div class="card" style="width: 20rem;">
+            <img src="\images\ApplicationUser\@Model.User.ImageUrl" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@Model.User?.UserName</h5>
+                <p class="card-text">
+                    @Model.User?.Name @Model.User?.LastName
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container col-8">
+        <div class="card">
+            <div class="card-header fw-bold">
+                <h4> Estas seguro que deseas eliminar esta publicación?</h4>
+            </div>
+            <form asp-action="Delete" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="PostId" class="form-control" />
+                <div class="card-body">
+                    @if (Model.ImageUrl != null)
+                    {
+                        <img src="/images/Post/@Model.ImageUrl" class="card-img" alt="@Model.PostId">
+                    }
+                    <div class="form-group m-3">
+                        @Model.Content
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group mt-2 text-center">
+                        <input type="submit" value="Eliminar " class="btn btn-block btn-danger col-6 mx-auto" />
+                        <a asp-action="Index" class="btn btn-block btn-info col-5 mx-auto">Regresar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

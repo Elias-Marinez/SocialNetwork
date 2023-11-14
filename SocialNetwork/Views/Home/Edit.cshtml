@@ -1,0 +1,60 @@
+﻿@model SocialNetwork.Core.Application.ViewModels.Post.PostUpdateViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row">
+    <div class="container col-4">
+        <div class="card" style="width: 20rem;">
+            <img src="\images\ApplicationUser\@Model.User.ImageUrl" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@Model.User?.UserName</h5>
+                <p class="card-text">
+                    @Model.User?.Name @Model.User?.LastName
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container col-8">
+        <div class="card">
+            <div class="card-header fw-bold">
+                Editar Publicación
+            </div>
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="PostId" class="form-control" />
+                <input type="hidden" asp-for="UserId" class="form-control" />
+                <input type="hidden" asp-for="ImageUrl" class="form-control" />
+                <div class="card-body">
+                    @if (Model.ImageUrl != null)
+                    { 
+                        <img src="/images/Post/@Model.ImageUrl" class="card-img" alt="@Model.PostId">
+                    }
+                    <div class="form-group m-3">
+                        <textarea asp-for="Content" class="form-control">@Model.Content </textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-2">
+                        <input type="file" asp-for="Image" class="form-control" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group mt-2 text-center">
+                        <input type="submit" value="Guardar" class="btn btn-block btn-primary col-6 mx-auto" />
+                        <a asp-action="Index" class="btn btn-block btn-info col-5 mx-auto">Regresar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

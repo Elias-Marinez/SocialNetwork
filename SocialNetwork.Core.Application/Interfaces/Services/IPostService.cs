@@ -9,6 +9,8 @@ namespace SocialNetwork.Core.Application.Interfaces.Services
                                                     PostUpdateViewModel,
                                                     Post>
     {
+        Task<HomeViewModel> GetHomeViewModel();
+        Task<PostUpdateViewModel> GetUpdateViewModel(int id);
         Task Update(PostUpdateViewModel vm, int id);
     }
 }

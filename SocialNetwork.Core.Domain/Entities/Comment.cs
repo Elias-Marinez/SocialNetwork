@@ -1,14 +1,14 @@
 ﻿
+using SocialNetwork.Core.Domain.Common;
+
 namespace SocialNetwork.Core.Domain.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity
     {
         public int CommentId { get; set; }
-        public int UserId { get; set; }
+        public required string UserId { get; set; }
         public int PostId { get; set; }
-        public required string Content {  get; set; }
-        public DateTime CreatedAt { get; set; }
-
+        
         // Navigation Property
         public Post? Post { get; set; }  
 
