@@ -15,7 +15,8 @@ namespace SocialNetwork.Infrastructure.Persistence
             #region Context
             services.AddDbContext<ApplicationContext>
                 (options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                m => m.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
+                m => m.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)),
+                ServiceLifetime.Scoped);
             #endregion
 
             #region Repositories
@@ -23,6 +24,7 @@ namespace SocialNetwork.Infrastructure.Persistence
 
             services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IFriendsRepository, FriendsRepository>();
             #endregion
         }
     }

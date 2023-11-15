@@ -3,6 +3,6 @@ namespace SocialNetwork.Core.Application.Dtos.Account.Request
 {
     public class ForgotPasswordRequest
     {
-        public string? Email { get; set; }
+        public string? UserName { get; set; }
     }
 }

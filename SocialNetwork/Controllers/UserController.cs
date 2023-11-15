@@ -7,6 +7,7 @@ using SocialNetwork.Core.Application.Helpers;
 using SocialNetwork.Middlewares;
 using SocialNetwork.Core.Application.Interfaces.Helpers;
 using SocialNetwork.Infrastructure.Identity.Entities;
+using SocialNetwork.Core.Application.Dtos.Account.Request;
 
 namespace SocialNetwork.Controllers
 {
@@ -81,6 +82,22 @@ namespace SocialNetwork.Controllers
                 vm.HasError = response.HasError;
                 vm.Error = response.Error;
                 return View(vm);
+            }
+
+            return RedirectToRoute(new { controller = "User", action = "Login" });
+        }
+
+        [ServiceFilter(typeof(LoginAuthorize))]
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(LoginViewModel vm)
+        {
+            ForgotPasswordResponse response = await _userService.ForgotPasswordAsync(vm.ForgotPasswordViewModel);
+
+            if (response.HasError)
+            {
+                vm.HasError = response.HasError;
+                vm.Error = response.Error;
+                return View("Login", vm);
             }
 
             return RedirectToRoute(new { controller = "User", action = "Login" });

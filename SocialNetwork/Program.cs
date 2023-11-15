@@ -18,6 +18,8 @@ builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddApplicationLayer();
 
 builder.Services.AddScoped<LoginAuthorize>();
+builder.Services.AddScoped<AppAuthorize>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<ValidateUserSession, ValidateUserSession>();
 

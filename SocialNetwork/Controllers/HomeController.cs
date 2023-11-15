@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.Core.Application.Dtos.Account.Response;
 using SocialNetwork.Core.Application.Interfaces.Helpers;
 using SocialNetwork.Core.Application.Interfaces.Services;
 using SocialNetwork.Core.Application.ViewModels.Comment;
 using SocialNetwork.Core.Application.ViewModels.Post;
 using SocialNetwork.Core.Domain.Entities;
+using SocialNetwork.Middlewares;
 using SocialNetwork.Models;
 using System.Diagnostics;
 
 namespace SocialNetwork.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -27,6 +26,7 @@ namespace SocialNetwork.Controllers
             _commentService = commentService;
         }
 
+        [ServiceFilter(typeof(AppAuthorize))]
         public async Task<IActionResult> Index()
         {
             HomeViewModel model = new HomeViewModel();
@@ -67,6 +67,8 @@ namespace SocialNetwork.Controllers
 
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
+
+        [ServiceFilter(typeof(AppAuthorize))]
         public async Task<ActionResult> Edit(int id)
         {
             return View(await _postService.GetUpdateViewModel(id));
@@ -93,6 +95,7 @@ namespace SocialNetwork.Controllers
             }
         }
 
+        [ServiceFilter(typeof(AppAuthorize))]
         public async Task<ActionResult> Delete(int id)
         {
             return View(await _postService.GetUpdateViewModel(id));

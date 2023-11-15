@@ -2,6 +2,7 @@
 using AutoMapper;
 using SocialNetwork.Core.Application.Dtos.Account.Request;
 using SocialNetwork.Core.Application.ViewModels.Comment;
+using SocialNetwork.Core.Application.ViewModels.Friends;
 using SocialNetwork.Core.Application.ViewModels.Post;
 using SocialNetwork.Core.Application.ViewModels.User;
 using SocialNetwork.Core.Domain.Entities;
@@ -61,6 +62,19 @@ namespace SocialNetwork.Core.Application.Mappings
 
             CreateMap<Comment, CommentViewModel>()
                 .ReverseMap();
+            #endregion
+
+            #region Friends
+            CreateMap<Friends, FriendsSaveViewModel>()
+                .ForMember(x => x.FriendUserName, opt => opt.Ignore())
+                .ForMember(x => x.Error, opt => opt.Ignore())
+                .ForMember(x => x.HasError, opt => opt.Ignore())
+                .ReverseMap()
+                .ForMember(x => x.FriendsId, opt => opt.Ignore());
+
+            CreateMap<Friends, FriendsViewModel>()
+                .ReverseMap();
+;
             #endregion
         }
     }

@@ -1,4 +1,5 @@
 ﻿
+using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using SocialNetwork.Core.Application.Dtos.Account.Request;
@@ -22,7 +23,32 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             _signInManager = signInManager;
             _emailService = emailService;
         }
+        public async Task<AuthenticationResponse> GetUserByUserNameAsync(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
 
+            
+            AuthenticationResponse response = new();
+
+            if (user == null)
+            {
+                response.HasError = true;
+                response.Error = $"No existen cuentas registradas con {userName}";
+                return response;
+            }
+
+            response.Id = user.Id;
+            response.Name = user.Name;
+            response.LastName = user.LastName;
+            response.Email = user.Email;
+            response.UserName = user.UserName;
+            response.PhoneNumber = user.PhoneNumber;
+            response.ImageUrl = user.ImageUrl;
+            response.IsVerified = user.EmailConfirmed;
+
+            return response;
+            
+        }
         public async Task<AuthenticationResponse> GetUserAsync(string id)
         {
             AuthenticationResponse response = new();
@@ -32,7 +58,7 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No user registered with {id}";
+                response.Error = $"No existe usuario registrado con {id}";
                 return response;
             }
 
@@ -47,7 +73,6 @@ namespace SocialNetwork.Infrastructure.Identity.Services
 
             return response;
         }
-
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             AuthenticationResponse response = new();
@@ -56,7 +81,7 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No Accounts registered with {request.UserName}";
+                response.Error = $"No hay cuentas registradas con {request.UserName}";
                 return response;
             }
 
@@ -65,14 +90,14 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"Invalid credentials for {request.UserName}";
+                response.Error = $"Credenciales invalidas para {request.UserName}";
                 return response;
             }
 
             if (!user.EmailConfirmed)
             {
                 response.HasError = true;
-                response.Error = $"Account no confirmed for {request.UserName}";
+                response.Error = $"Cuenta no confirmada para {request.UserName}";
                 return response;
             }
 
@@ -87,12 +112,10 @@ namespace SocialNetwork.Infrastructure.Identity.Services
 
             return response;
         }
-
         public async Task SignOutAsync()
         {
             await _signInManager.SignOutAsync();
         }
-
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request, string origin)
         {
             RegisterResponse response = new();
@@ -101,7 +124,7 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             if (userWithSameUserName != null)
             {
                 response.HasError = true;
-                response.Error = $"Username '{request.UserName}' is already taken.";
+                response.Error = $"Nombre de Usuario '{request.UserName}' ya ha sido tomado.";
                 return response;
             }
 
@@ -109,7 +132,7 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             if (userWithSameEmail != null)
             {
                 response.HasError = true;
-                response.Error = $"Email '{request.Email}' is already registered.";
+                response.Error = $"Email '{request.Email}' ya ha sido registrado.";
                 return response;
             }
 
@@ -131,14 +154,14 @@ namespace SocialNetwork.Infrastructure.Identity.Services
                 await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
                 {
                     To = user.Email,
-                    Body = $"Please confirm your account visiting this URL {verificationUri}",
-                    Subject = "SocialNetwork Confirm registration"
+                    Body = $"Por favor confirma tu cuenta visitando {verificationUri}",
+                    Subject = "SocialNetwork Confirmacion de registro"
                 });
             }
             else
             {
                 response.HasError = true;
-                response.Error = $"An error occurred trying to register the user.";
+                response.Error = $"Ha ocurrido un error mientras se registraba el usuario";
                 return response;
             }
 
@@ -149,72 +172,90 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return $"No accounts registered with this user";
+                return $"No hay cuentas registradas con este usuario";
             }
 
             token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
-                return $"Account confirmed for {user.Email}. You can now use the app";
+                return $"Cuenta confirmada para {user.Email}. Ya puedes entrar a la App";
             }
             else
             {
-                return $"An error occurred wgile confirming {user.Email}.";
+                return $"Ha ocurrido un error al validar {user.Email}.";
             }
         }
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
+        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
             ForgotPasswordResponse response = new()
             {
                 HasError = false
             };
 
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByNameAsync(request.UserName);
 
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No Accounts registered with {request.Email}";
+                response.Error = $"No hay cuentas registradas con {request.UserName}";
                 return response;
             }
 
-            var verificationUri = await SendForgotPasswordUri(user, origin);
+            string newPassword = GenerateRandomSecurePassword();
 
-            await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
+            var result = await _userManager.RemovePasswordAsync(user);
+            if (result.Succeeded)
             {
-                To = user.Email,
-                Body = $"Please reset your account visiting this URL {verificationUri}",
-                Subject = "Reset Password"
-            });
-
-
-            return response;
-        }
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ResetPasswordResponse response = new();
-
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
-            {
-                response.HasError = true;
-                response.Error = $"No Accounts registered with {request.Email}";
-                return response;
+                result = await _userManager.AddPasswordAsync(user, newPassword);
+                if (result.Succeeded)
+                {
+                    var emailBody = $"Tu nueva contraseña es: {newPassword}";
+                    await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
+                    {
+                        To = user.Email,
+                        Body = emailBody,
+                        Subject = "Reset Password"
+                    });
+                }
             }
-
-            request.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
 
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"An error occurred while reset password";
-                return response;
+                response.Error = "Failed to reset password.";
             }
 
             return response;
+        }
+        private string GenerateRandomSecurePassword()
+        {
+            // Obtener las opciones de contraseña de Identity
+            var passwordOptions = new PasswordOptions
+            {
+                RequiredLength = 12,
+                RequireNonAlphanumeric = true,
+                RequireLowercase = true,
+                RequireUppercase = true,
+                RequireDigit = true
+            };
+
+            // Caracteres permitidos basados en las opciones de contraseña de Identity
+            const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
+
+            // Filtrar caracteres permitidos basados en las opciones de contraseña de Identity
+            var allowedCharsFiltered = allowedChars
+                .Where(c => (passwordOptions.RequireNonAlphanumeric || char.IsLetterOrDigit(c)) &&
+                            (passwordOptions.RequireLowercase || char.IsLower(c)) &&
+                            (passwordOptions.RequireUppercase || char.IsUpper(c)) &&
+                            (passwordOptions.RequireDigit || char.IsDigit(c)))
+                .ToArray();
+
+            var random = new Random();
+            var password = new string(Enumerable.Repeat(allowedCharsFiltered, passwordOptions.RequiredLength)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            return password;
         }
         private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
         {
@@ -224,16 +265,6 @@ namespace SocialNetwork.Infrastructure.Identity.Services
             var Uri = new Uri(string.Concat($"{origin}/", route));
             var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
-
-            return verificationUri;
-        }
-        private async Task<string> SendForgotPasswordUri(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "User/ResetPassword";
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "token", code);
 
             return verificationUri;
         }

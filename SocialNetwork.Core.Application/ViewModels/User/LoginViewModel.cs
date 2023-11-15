@@ -14,5 +14,7 @@ namespace SocialNetwork.Core.Application.ViewModels.User
         public string Password { get; set; }
         public bool HasError { get; set; }
         public string? Error { get; set; }
+
+        public ForgotPasswordViewModel? ForgotPasswordViewModel { get; set; }   
     }
 }

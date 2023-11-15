@@ -40,16 +40,10 @@ namespace SocialNetwork.Core.Application.Services
             return await _accountService.ConfirmAccountAsync(userId, token);
         }
 
-        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel vm, string origin)
+        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel vm)
         {
             ForgotPasswordRequest forgotRequest = _mapper.Map<ForgotPasswordRequest>(vm);
-            return await _accountService.ForgotPasswordAsync(forgotRequest, origin);
-        }
-
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel vm)
-        {
-            ResetPasswordRequest resetRequest = _mapper.Map<ResetPasswordRequest>(vm);
-            return await _accountService.ResetPasswordAsync(resetRequest);
+            return await _accountService.ForgotPasswordAsync(forgotRequest);
         }
     }
 }

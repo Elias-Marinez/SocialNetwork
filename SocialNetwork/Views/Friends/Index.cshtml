@@ -1,0 +1,208 @@
+﻿@model SocialNetwork.Core.Application.ViewModels.Friends.FriendsHomeViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="container col-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Amigos</h5>
+                <div>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Agregar Amigo
+                    </button>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (Model.Friends.Any())
+                {
+                    @foreach (var item in Model.Friends)
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>@item.Name @item.LastName (@item.Username)</span>
+                                <a asp-action="Delete" asp-controller="Friends" asp-route-id="@item.FriendsId" class="btn btn-outline-danger">
+                                    Eliminar
+                                </a>
+                            </div>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item">No tienes amigos</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="container col-8">
+        <div class="card">
+            <div class="card-header fw-bold">
+                <h5>Publicaciones</h5>
+            </div>
+        </div>
+        @if (Model.Posts.Any())
+        {
+            @foreach (var item in Model.Posts)
+            {
+                @if (item.ImageUrl != null)
+                {
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                    <img src="\images\ApplicationUser\@item.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
+                                </div>
+                                <div class="ml-3">
+                                    <h5 class="mb-0">@Html.DisplayFor(modelItem => item.User.UserName)</h5>
+                                </div>
+                                <div class="ml-3 ms-auto">
+                                    <span>@Html.DisplayFor(modelItem => item.CreatedAt)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <img src="\images\Post\@item.ImageUrl" class="img-thumbnail">
+                        </div>
+                        <div class="card-footer">
+                            <p class="card-text mt-1 mb-1">
+                                <h6>@Html.DisplayFor(modelItem => item.Content)</h6>
+                            </p>
+                            <div class="accordion" id="accordionExample_@item.PostId">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_@item.PostId" aria-expanded="true" aria-controls="collapseOne_@item.PostId">
+                                            Comentarios
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne_@item.PostId" class="accordion-collapse collapse" data-bs-parent="#accordionExample_@item.PostId">
+                                        <div class="accordion-body">
+                                            @foreach (var comment in item.Comments)
+                                            {
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <div class="rounded-circle overflow-hidden" style="width: 35px; height: 35px;">
+                                                        <img src="\images\ApplicationUser\@comment.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <h6 class="mb-0">@Html.DisplayFor(modelItem => comment.User.UserName)</h6>
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        &nbsp; @Html.DisplayFor(modelItem => comment.Content)
+                                                    </div>
+                                                </div>
+                                            }
+                                            <form asp-action="Comment">
+                                                <input type="hidden" asp-for="NewComment.UserId" value="@Model.User.Id" class="form-control" />
+                                                <input type="hidden" asp-for="NewComment.PostId" value="@item.PostId" class="form-control" />
+                                                <div class="form-group mt-2">
+                                                    <input asp-for="NewComment.Content" class="form-control" placeholder="Nuevo Comentario" required>
+                                                    <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group mt-2 text-end">
+                                                    <input type="submit" value="Comentar" class="btn btn-block btn-primary col-4" />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card mt-5">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+                                    <img src="\images\ApplicationUser\@item.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
+                                </div>
+                                <div class="ml-3">
+                                    <h5 class="mb-0">@Html.DisplayFor(modelItem => item.User.UserName)</h5>
+                                </div>
+                                <div class="ml-3 ms-auto">
+                                    <span>@Html.DisplayFor(modelItem => item.CreatedAt)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h6>@Html.DisplayFor(modelItem => item.Content)</h6>
+                        </div>
+                        <div class="card-footer">
+                            <div class="accordion" id="accordionExample_@item.PostId">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_@item.PostId" aria-expanded="true" aria-controls="collapseOne_@item.PostId">
+                                            Comentarios
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne_@item.PostId" class="accordion-collapse collapse" data-bs-parent="#accordionExample_@item.PostId">
+                                        <div class="accordion-body">
+                                            @foreach (var comment in item.Comments)
+                                            {
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <div class="rounded-circle overflow-hidden" style="width: 35px; height: 35px;">
+                                                        <img src="\images\ApplicationUser\@comment.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <h6 class="mb-0">@Html.DisplayFor(modelItem => comment.User.UserName)</h6>
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        &nbsp; @Html.DisplayFor(modelItem => comment.Content)
+                                                    </div>
+                                                </div>
+                                            }
+                                            <form asp-action="Comment">
+                                                <input type="hidden" asp-for="NewComment.UserId" value="@Model.User.Id" class="form-control" />
+                                                <input type="hidden" asp-for="NewComment.PostId" value="@item.PostId" class="form-control" />
+                                                <div class="form-group mt-2">
+                                                    <input asp-for="NewComment.Content" class="form-control" placeholder="Nuevo Comentario" required>
+                                                    <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group mt-2 text-end">
+                                                    <input type="submit" value="Comentar" class="btn btn-block btn-primary col-4" />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else
+            {
+                <div class="text-center mt-3"> No hay publicaciones</div>
+            }
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Agregando Amigo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Friend">
+                <div class="modal-body">
+                    <input type="hidden" asp-for="NewFriend.UserId" value="@Model.User.Id" class="form-control" />
+                    <div class="form-group">
+                        <input type="text" asp-for="NewFriend.FriendUserName" placeholder="Nombre de usuario" class="form-control" required />
+                        <span asp-validation-for="NewFriend.FriendUserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" value="Agregar" class="btn btn-primary">Agregar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -51,6 +51,9 @@
                             <div class="ml-3">
                                 <h5 class="mb-0">@Html.DisplayFor(modelItem => item.User.UserName)</h5>
                             </div>
+                            <div class="ml-3">
+                                <span> &nbsp; (@Html.DisplayFor(modelItem => item.CreatedAt))</span>
+                            </div>
                             <div class="ms-auto">
                                 <a asp-action="Edit" asp-route-id="@item.PostId" class="btn btn-outline-warning ml-2 mr-auto">
                                     Editar
@@ -83,7 +86,10 @@
                                                     <img src="\images\ApplicationUser\@comment.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
                                                 </div>
                                                 <div class="ml-3">
-                                                    @Html.DisplayFor(modelItem => comment.Content)
+                                                    <h6 class="mb-0">@Html.DisplayFor(modelItem => comment.User.UserName)</h6>
+                                                </div>
+                                                <div class="ml-3">
+                                                    &nbsp; @Html.DisplayFor(modelItem => comment.Content)
                                                 </div>
                                             </div>
                                         }
@@ -116,6 +122,9 @@
                             <div class="ml-3">
                                 <h5 class="mb-0">@Html.DisplayFor(modelItem => item.User.UserName)</h5>
                             </div>
+                            <div class="ml-3">
+                                <span> &nbsp; (@Html.DisplayFor(modelItem => item.CreatedAt))</span>
+                            </div>
                             <div class="ms-auto">
                                 <a asp-action="Edit" asp-route-id="@item.PostId" class="btn btn-outline-warning ml-2 mr-auto">
                                     Editar
@@ -146,7 +155,10 @@
                                                     <img src="\images\ApplicationUser\@comment.User.ImageUrl" alt="Imagen Circular" class="w-100 h-100">
                                                 </div>
                                                 <div class="ml-3">
-                                                    @Html.DisplayFor(modelItem => comment.Content)
+                                                    <h6 class="mb-0">@Html.DisplayFor(modelItem => comment.User.UserName)</h6>
+                                                </div>
+                                                <div class="ml-3">
+                                                   &nbsp; @Html.DisplayFor(modelItem => comment.Content)
                                                 </div>
                                             </div>
                                         }

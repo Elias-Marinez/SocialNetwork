@@ -1,4 +1,7 @@
 ﻿
+using SocialNetwork.Core.Application.Dtos.Account.Response;
+using SocialNetwork.Core.Application.ViewModels.Post;
+
 namespace SocialNetwork.Core.Application.ViewModels.Friends
 {
     public class FriendsViewModel

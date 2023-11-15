@@ -24,11 +24,49 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     }
+                    @if (Model.ForgotPasswordViewModel != null){
+                        @if (Model.ForgotPasswordViewModel.HasError)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p>@Model.ForgotPasswordViewModel.Error</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    }
+                    
                     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                    <div class="me-auto">
+                        <button type="submit" class="btn btn-primary col-6 ms-auto">Iniciar sesión</button>
+                        <button type="button" class="btn btn-warning col-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Restablecer Contraseña
+                        </button>
+                    </div>
                 </form>
-
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Restablecer Contraseña</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="ForgotPassword">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" asp-for="ForgotPasswordViewModel.UserName" placeholder="Nombre de usuario" class="form-control" required />
+                        <span asp-validation-for="ForgotPasswordViewModel.UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" value="Restablecer" class="btn btn-primary">Restablecer</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

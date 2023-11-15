@@ -5,14 +5,10 @@ namespace SocialNetwork.Core.Application.ViewModels.Friends
 {
     public class FriendViewModel
     {
-        public string UserId { get; set; }
+        public int FriendsId { get; set; }
+        public string Id { get; set; }
         public required string Name { get; set; }
         public required string LastName { get; set; }
-        public required string Phone { get; set; }
-        public required string Email { get; set; }
         public required string Username { get; set; }
-        public required string ImageUrl { get; set; }
-
-        public IEnumerable<PostViewModel>? Posts { get; set; }
     }
 }
